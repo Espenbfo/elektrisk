@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h1 id="result">Elektrisk score: ??</h1>
+<div>
+<input id="inp"/>
+<button id="sub">SUBMIT</button>
+</div>
+<p id="disclaimer">Basert på data hentet 2022.02.14</p>
+<script>
+
+    const views = 326000000
+    document.getElementById("sub").addEventListener("click", () => {
+        let value = document.getElementById("inp").value;
+        if (value[value.length-1].toLowerCase() === "k") {
+            value = Number.parseFloat(value.substr(0, value.length-1))*1000;
+        }
+        else if (value[value.length-1].toLowerCase() === "m") {
+            value = Number.parseFloat(value.substr(0, value.length-1))*1000000;
+        }
+        else if (value[value.length-1].toLowerCase() === "b") {
+            value = Number.parseFloat(value.substr(0, value.length-1))*1000000000;
+        }
+        document.getElementById("result").innerText = `Elektrisk score: ${Math.round(Math.log(value)/Math.log(views)*1000)/1000}`
+
+    })
+</script>
+</body>
+</html>
