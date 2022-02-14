@@ -34,7 +34,7 @@
     document.getElementById("sub").addEventListener("click", () => {
         let value = document.getElementById("inp").value;
         let views;
-        if (!isNaN(value[value.length - 1])) {
+        if (!isNaN(value.substr(0, value.length - 1)) && isNaN(value[value.length - 1])) {
             if (value[value.length - 1].toLowerCase() === "k") {
                 views = Number.parseFloat(value.substr(0, value.length - 1)) * 1000;
             } else if (value[value.length - 1].toLowerCase() === "m") {
@@ -42,9 +42,9 @@
             } else if (value[value.length - 1].toLowerCase() === "b") {
                 views = Number.parseFloat(value.substr(0, value.length - 1)) * 1000000000;
             }
-            else {
-                views = Number.parseFloat(value)
-            }
+        }
+        else if (!isNaN(value)) {
+            views = Number.parseFloat(value);
         }
         if (isNaN(views)) {
             fetch(`https://www.googleapis.com/youtube/v3/videos?id=${value}&key=${API_KEY}
