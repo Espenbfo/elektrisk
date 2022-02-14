@@ -7,29 +7,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<h1 id="result">Elektrisk score: ??</h1>
+<h4 id="current">Marcus & Martinus - Elektrisk (Official Music Video) ft. Katastrofe har for øyeblikket -- views.</h4>
+<h4 id="compared"></h4>
+<h1 id="result"></h1>
+<p id="label">Skriv inn antall views eller en youtube id under</p>
 <div>
-<input id="inp"/>
-<button id="sub">SUBMIT</button>
+    <input id="inp"/>
+    <button id="sub">SUBMIT</button>
 </div>
-<p id="disclaimer">Basert på data hentet 2022.02.14</p>
 <script>
 
-    const views = 326000000
+    const API_KEY = "AIzaSyA_N1VWc0Yv8KRLwp3SBBAkc9PCMNYYQjY"
+    const ELEKTRISK_ID = "ri5_fzndMBg"
+    let elektriskCount;
+    fetch(`https://www.googleapis.com/youtube/v3/videos?id=${ELEKTRISK_ID}&key=${API_KEY}
+     &part=snippet,statistics`).then(value => value.json()).then(value => {
+        elektriskCount = value.items[0].statistics.viewCount;
+        document.getElementById("current").innerText = `Marcus & Martinus - Elektrisk (Official Music Video) ft. Katastrofe har for øyeblikket ${elektriskCount} views`
+    })
     document.getElementById("sub").addEventListener("click", () => {
         let value = document.getElementById("inp").value;
-        if (value[value.length-1].toLowerCase() === "k") {
-            value = Number.parseFloat(value.substr(0, value.length-1))*1000;
+        let views;
+        if (Number.parseFloat(value[value.length - 1])) {
+            if (value[value.length - 1].toLowerCase() === "k") {
+                views = Number.parseFloat(value.substr(0, value.length - 1)) * 1000;
+            } else if (value[value.length - 1].toLowerCase() === "m") {
+                views = Number.parseFloat(value.substr(0, value.length - 1)) * 1000000;
+            } else if (value[value.length - 1].toLowerCase() === "b") {
+                views = Number.parseFloat(value.substr(0, value.length - 1)) * 1000000000;
+            }
         }
-        else if (value[value.length-1].toLowerCase() === "m") {
-            value = Number.parseFloat(value.substr(0, value.length-1))*1000000;
-        }
-        else if (value[value.length-1].toLowerCase() === "b") {
-            value = Number.parseFloat(value.substr(0, value.length-1))*1000000000;
-        }
-        document.getElementById("result").innerText = `Elektrisk score: ${Math.round(Math.log(value)/Math.log(views)*1000)/1000}`
+        if (!views) views = Number.parseFloat(value)
 
+        if (isNaN(views)) {
+            fetch(`https://www.googleapis.com/youtube/v3/videos?id=${value}&key=${API_KEY}
+     &part=snippet,statistics`).then(value => value.json()).then(value => {
+                const count = value.items[0].statistics.viewCount;
+                const { title } = value.items[0].snippet
+                document.getElementById("result").innerText = `${Math.round(Math.log(count) / Math.log(elektriskCount) * 1000) / 1000}`
+                document.getElementById("compared").innerText = `${title}: har for øyeblikket ${count} views.`
+                document.getElementById("result").classList.add("elektrisk")
+            })
+        } else {
+            document.getElementById("result").innerText = `${Math.round(Math.log(views) / Math.log(elektriskCount) * 1000) / 1000}`
+            document.getElementById("result").classList.add("elektrisk")
+        }
     })
 </script>
+
 </body>
 </html>
